@@ -4,46 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0  user-scalable=yes">
     <link rel="stylesheet" href="./assets/css/stylesheet.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="./assets/img/VLC.svg">
     <title>VLC Media Player</title>
 </head>
 
 <body>
-    <div class="drop-zone">
-        <img class="vlc-icon" id="vlc-icon" src="./assets/img/VLC.svg">
-        <input type="file" name="the-file" class="drop-zone-input">
-        <video class="drop-zone-video" id="drop-zone-video"></video>
-    </div>
-
-    <div class="bottom-bar">
-        <div class="progress-bar">
-            <span class="time-one" id="time-one">--:--</span>
-            <span class="time-two" id="time-two">--:--</span>
-            <div class="progress-barz">
-                <div class="barz-inner"></div>
+    <div class="VLC-body">
+        <div class="nav">
+            <a>Media</a>
+            <a>Playback</a>
+            <a>Audio</a>
+            <a>Video</a>
+            <a>Subtitle</a>
+            <a>Tools</a>
+            <a>View</a>
+            <a>Help</a>
+        </div>
+        <div class="drop-zone">
+            <img class="vlc-icon" id="vlc-icon" src="./assets/img/VLC.svg">
+            <input type="file" name="the-file" class="drop-zone-input">
+            <video class="drop-zone-video" id="drop-zone-video"></video>
+            <audio class="drop-zone-audio" id="drop-zone-audio"></audio>
+            <img class="drop-zone-image" id="drop-zone-image">
+        </div>
+        <div class="bottom-bar">
+            <div class="progress-bar">
+                <span class="time-one" id="time-one">--:--</span>
+                <span class="time-two" id="time-two">--:--</span>
+                <div class="progress-barz">
+                    <div class="barz-inner"></div>
+                </div>
+            </div>
+            <div class="control-bar">
+                <button class="btn-play" id="btn-play" onclick="Vplay()">⏵</button>
+                <button class="btn-pause" id="btn-pause" onclick="Vpause()">⏸</button>
+                <button class="btn-skip-backward" id="btn-skip-backward" title="Coming Soon!" onclick="null">⏮</button>
+                <button class="btn-stop" id="btn-stop" onclick="Vstop()">⏹</button>
+                <button class="btn-skip-forward" id="btn-skip-forward" title="Coming Soon!" onclick="null">⏭</button>
+                <button class="btn-fullscreen" id="btn-fullscreen" onclick="Vfullscreen()">🔳</button>
+                <button class="btn-eq" id="btn-eq" title="Coming Soon!" onclick="null">📊</button>
+                <button class="btn-playlist" id="btn-playlist" title="Coming Soon!" onclick="null">🎹</button>
+                <button class="btn-repeat" id="btn-repeat" title="Coming Soon!" onclick="null">🔁</button>
+                <button class="btn-shuffle" id="btn-shuffle" title="Coming Soon!" onclick="null">🔀</button>
+                <div class="volume-slider">
+                    <input type="range" min="0" max="100" value="100" class="slider" id="volume-range">
+                </div>
             </div>
         </div>
-
-        <div class="control-bar">
-            <button class="btn-play" id="btn-play" onclick="Vplay()">⏵</button>
-            <button class="btn-pause" id="btn-pause" onclick="Vpause()">⏸</button>
-            <button class="btn-skip-backward" id="btn-skip-backward" title="Coming Soon!" onclick="null">⏮</button>
-            <button class="btn-stop" id="btn-stop" onclick="Vstop()">⏹</button>
-            <button class="btn-skip-forward" id="btn-skip-forward" title="Coming Soon!" onclick="null">⏭</button>
-            <button class="btn-fullscreen" id="btn-fullscreen" onclick="Vfullscreen()">🔳</button>
-            <button class="btn-eq" id="btn-eq" title="Coming Soon!" onclick="null">📊</button>
-            <button class="btn-playlist" id="btn-playlist" title="Coming Soon!" onclick="null">🎹</button>
-            <button class="btn-repeat" id="btn-repeat" title="Coming Soon!" onclick="null">🔁</button>
-            <button class="btn-shuffle" id="btn-shuffle" title="Coming Soon!" onclick="null">🔀</button>
-            <div class="volume-slider">
-                <input type="range" min="0" max="100" value="100" class="slider" id="volume-range">
-            </div>
-        </div>
+        <script src="./assets/js/index.js"></script>
     </div>
-    <script src="./assets/js/index.js"></script>
-
 </body>
 
 </html>

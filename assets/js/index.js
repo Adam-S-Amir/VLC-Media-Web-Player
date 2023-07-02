@@ -1,4 +1,8 @@
 const videoElement = document.getElementById("drop-zone-video");
+const audioElement = document.getElementById("drop-zone-audio");
+const progressBar = document.querySelector(".barz-inner");
+
+let currentlyPlayingElement = null;
 
 document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     const dropZoneElement = inputElement.closest(".drop-zone");
@@ -10,6 +14,14 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     inputElement.addEventListener("change", (e) => {
         if (inputElement.files.length) {
             updateThumbnail(dropZoneElement, inputElement.files[0]);
+            const file = inputElement.files[0];
+            if (file.type.startsWith("image/")) {
+                displayImage(file);
+            } else if (file.type.startsWith("video/")) {
+                playVideo(file);
+            } else if (file.type.startsWith("audio/")) {
+                playAudio(file);
+            }
         }
     });
 
@@ -30,28 +42,47 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
         if (e.dataTransfer.files.length) {
             inputElement.files = e.dataTransfer.files;
             updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith("image/")) {
+                displayImage(file);
+            } else if (file.type.startsWith("video/")) {
+                playVideo(file);
+            } else if (file.type.startsWith("audio/")) {
+                playAudio(file);
+            }
         }
 
         dropZoneElement.classList.remove("drop-zone--over");
     });
 });
 
-/**
- * Updates the thumbnail on a drop zone element.
- *
- * @param {HTMLElement} dropZoneElement
- * @param {File} file
- */
-
 function updateThumbnail(dropZoneElement, file) {
-    let thumbnailElement = dropZoneElement.querySelector(".drop-zone-thumb");
+    let thumbnailElement = dropZoneElement.querySelector(".drop-zone-image");
 
-    // First time - remove the prompt
-    if (dropZoneElement.querySelector(".drop-zone-prompt")) {
-        dropZoneElement.querySelector(".drop-zone-prompt").remove();
+    // Show thumbnail for image files
+    if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            thumbnailElement.src = reader.result;
+            thumbnailElement.style.display = "block";
+            videoElement.style.display = "none";
+            audioElement.style.display = "none";
+        };
+
+        reader.readAsDataURL(file);
+    } else if (file.type.startsWith("audio/")) {
+        thumbnailElement.style.display = "none";
+        videoElement.style.display = "none";
+        audioElement.style.display = "block";
+        audioElement.src = URL.createObjectURL(file);
+        audioElement.play();
+    } else {
+        thumbnailElement.style.display = "none";
+        videoElement.style.display = "none";
+        audioElement.style.display = "none";
     }
 
-    // First time - there is no thumbnail element, so let's create it
     if (!thumbnailElement) {
         thumbnailElement = document.createElement("div");
         thumbnailElement.classList.add("drop-zone-thumb");
@@ -61,38 +92,6 @@ function updateThumbnail(dropZoneElement, file) {
     }
 
     thumbnailElement.dataset.label = file.name;
-
-    // Show thumbnail for image files
-    if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            const imgElement = document.createElement("img");
-            imgElement.onload = () => {
-                const width = imgElement.width;
-                const height = imgElement.height;
-                const aspectRatio = width / height;
-
-                if (width > height) {
-                    imgElement.style.width = "100%";
-                    imgElement.style.height = "auto";
-                } else {
-                    imgElement.style.width = "auto";
-                    imgElement.style.height = "100%";
-                }
-
-                thumbnailElement.innerHTML = ""; // Clear existing content
-                thumbnailElement.appendChild(imgElement);
-            };
-
-            imgElement.src = reader.result;
-            imgElement.alt = file.name;
-        };
-
-        reader.readAsDataURL(file);
-    } else {
-        thumbnailElement.innerHTML = null;
-    }
 }
 
 document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
@@ -102,14 +101,25 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     dropZoneElement.addEventListener("click", (e) => {
         inputElement.click();
         videoElement.style.display = "block";
+        audioElement.style.display = "none";
     });
 
     inputElement.addEventListener("change", (e) => {
         if (inputElement.files.length) {
             const file = inputElement.files[0];
             const fileURL = URL.createObjectURL(file);
-            videoElement.src = fileURL;
-            videoElement.play();
+
+            if (file.type.startsWith("video/")) {
+                playVideo(fileURL);
+                videoElement.play();
+                videoElement.style.display = "block";
+                audioElement.style.display = "none";
+            } else if (file.type.startsWith("audio/")) {
+                playAudio(fileURL);
+                audioElement.play();
+                videoElement.style.display = "none";
+                audioElement.style.display = "block";
+            }
         }
     });
 
@@ -130,13 +140,73 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
         if (e.dataTransfer.files.length) {
             const file = e.dataTransfer.files[0];
             const fileURL = URL.createObjectURL(file);
-            videoElement.src = fileURL;
-            videoElement.play();
+
+            if (file.type.startsWith("video/")) {
+                playVideo(fileURL);
+                videoElement.src = fileURL;
+                videoElement.play();
+                videoElement.style.display = "block";
+                audioElement.style.display = "none";
+            } else if (file.type.startsWith("audio/")) {
+                playAudio(fileURL);
+                audioElement.src = fileURL;
+                audioElement.play();
+                videoElement.style.display = "none";
+                audioElement.style.display = "block";
+            }
         }
 
         dropZoneElement.classList.remove("drop-zone--over");
     });
 });
+
+function displayImage(file) {
+    if (currentlyPlayingElement) {
+        currentlyPlayingElement.src = "";
+        currentlyPlayingElement.style.display = "none";
+        currentlyPlayingElement = null;
+        progressBar.style.width = 0;
+        document.getElementById("time-one").innerHTML = '--:--'
+        document.getElementById("time-two").innerHTML = '--:--'
+    }
+
+    const thumbnailElement = document.getElementById("thumbnail");
+    const reader = new FileReader();
+    document.getElementById("time-one").innerHTML = '--:--';
+    document.getElementById("time-two").innerHTML = '--:--';
+    reader.onload = () => {
+        thumbnailElement.src = reader.result;
+        thumbnailElement.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function playVideo(fileURL) {
+    if (currentlyPlayingElement === audioElement) {
+        audioElement.src = "";
+        audioElement.style.display = "none";
+        progressBar.style.width = 0;
+    }
+
+    videoElement.src = fileURL;
+    videoElement.play();
+    videoElement.style.display = "block";
+    currentlyPlayingElement = videoElement;
+}
+
+function playAudio(fileURL) {
+    if (currentlyPlayingElement === videoElement) {
+        videoElement.src = "";
+        videoElement.style.display = "none";
+        progressBar.style.width = 0;
+    }
+
+    audioElement.src = fileURL;
+    audioElement.play();
+    audioElement.style.display = "block";
+    currentlyPlayingElement = audioElement;
+}
 
 videoElement.addEventListener("timeupdate", () => {
     const currentTime = videoElement.currentTime;
@@ -145,16 +215,22 @@ videoElement.addEventListener("timeupdate", () => {
     Ctime.innerHTML = formattedTime;
 });
 
-function formatTime(time) {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(seconds).padStart(2, "0");
-    return `${formattedMinutes}:${formattedSeconds}`;
-}
+audioElement.addEventListener("timeupdate", () => {
+    const currentTime = audioElement.currentTime;
+    const formattedTime = formatTime(currentTime);
+    let Ctime = document.getElementById("time-one");
+    Ctime.innerHTML = formattedTime;
+});
 
 videoElement.addEventListener("loadedmetadata", () => {
     const duration = videoElement.duration;
+    const formattedDuration = formatTime(duration);
+    let Ctime = document.getElementById("time-two");
+    Ctime.innerHTML = formattedDuration;
+});
+
+audioElement.addEventListener("loadedmetadata", () => {
+    const duration = audioElement.duration;
     const formattedDuration = formatTime(duration);
     let Ctime = document.getElementById("time-two");
     Ctime.innerHTML = formattedDuration;
@@ -168,35 +244,53 @@ function formatTime(time) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-const progressBar = document.querySelector(".barz-inner");
+videoElement.addEventListener("play", () => {
+    videoElement.addEventListener("timeupdate", updateProgressBar);
 
-videoElement.addEventListener("timeupdate", updateProgressBar);
+    function updateProgressBar() {
+        const currentTime = videoElement.currentTime;
+        const duration = videoElement.duration;
+        const progress = (currentTime / duration) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+});
 
-function updateProgressBar() {
-    const currentTime = videoElement.currentTime;
-    const duration = videoElement.duration;
-    const progress = (currentTime / duration) * 100;
-    progressBar.style.width = `${progress}%`;
-}
+audioElement.addEventListener("play", () => {
+    audioElement.addEventListener("timeupdate", updateProgressBar);
 
+    function updateProgressBar() {
+        const currentTime = audioElement.currentTime;
+        const duration = audioElement.duration;
+        const progress = (currentTime / duration) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+});
 
 function Vplay() {
-    let videoElement = document.getElementById("drop-zone-video");
     videoElement.play();
+    audioElement.play();
 }
 
 function Vpause() {
-    let videoElement = document.getElementById("drop-zone-video");
     videoElement.pause();
+    audioElement.pause();
 }
 
 function Vstop() {
-    Vpause();
-    let videoElement = document.getElementById("drop-zone-video");
-    videoElement.style.display = "none";
-    rmv = document.getElementById("vlc-icon");
-    rmv.style.display = "inline";
+    if (currentlyPlayingElement) {
+        currentlyPlayingElement.src = "";
+        currentlyPlayingElement.style.display = "none";
+        currentlyPlayingElement = null;
+        progressBar.style.width = 0;
+        document.getElementById("time-one").innerHTML = '--:--'
+        document.getElementById("time-two").innerHTML = '--:--'
+        Vstop();
+    } else {
+        document.getElementById("time-one").innerHTML = '--:--';
+        document.getElementById("time-two").innerHTML = '--:--';
+    }
 }
+
 
 function Vfullscreen() {
     const docElement = document.documentElement;
@@ -236,9 +330,5 @@ const volumeRange = document.getElementById('volume-range');
 volumeRange.addEventListener('input', () => {
     const volume = volumeRange.value / 100;
     videoElement.volume = volume;
+    audioElement.volume = volume;
 });
-
-
-function trash() {
-    console.log("hello");
-}

@@ -2,27 +2,47 @@ body,
 html {
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
     background-color: red;
 }
 
-.drop-zone {
-    /* background-color: black;
-    position: relative;
-    font-family: "Quicksand", sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    cursor: pointer;
-    color: #cccccc; */
-    text-align: center;
-    background-color: black;
+.VLC-body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.nav {
+    overflow: hidden;
+    background-color: #C7CFCF;
     position: fixed;
     width: 100%;
-    height: 92%;
-    top: 0px;
-    left: 0px;
+    z-index: 2;
+}
+
+.nav a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 8px 8px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.nav a:hover {
+    background-color: #6B6B6B;
+}
+
+.drop-zone {
+    text-align: center;
+    background-color: black;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 72px;
     z-index: 1;
 }
 
@@ -51,15 +71,18 @@ body {
     height: 100%;
     padding: 5px 0;
     color: #ffffff;
-    background: rgba(0, 0, 0, 0.75);
+    background: black;
     font-size: 14px;
     text-align: center;
 }
 
 .vlc-icon {
-    margin-top: 20%;
     width: 128px;
     height: 128px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .bottom-bar {
@@ -67,7 +90,6 @@ body {
     bottom: 0px;
     left: 0px;
     width: 100%;
-    height: 8%;
     position: fixed;
 }
 
@@ -76,21 +98,20 @@ body {
     z-index: 3;
     display: block;
     position: relative;
-    background-color: rgb(199, 207, 207);
+    background-color: #C7CFCF;
 }
 
 .progress-bar {
     height: 16%;
     position: relative;
-    padding-top: 5px
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 .progress-barz {
     bottom: 0px;
     z-index: 4;
-    /* text-align: -webkit-center; */
     position: relative;
-    background-color: #8F8F8F;
     border-radius: 10px;
     height: 100%;
     width: 90%;
@@ -104,10 +125,11 @@ body {
     height: 100%;
     width: 0%;
     border-radius: 10px;
-    background-color: rgb(107, 107, 107);
+    background-color: #6B6B6B;
 }
 
 .control-bar {
+    border-top: 1px solid #8F8F8F;
     height: 85%;
     position: relative;
     padding-top: 7px;
@@ -149,12 +171,11 @@ button {
 .btn-playlist,
 .btn-repeat,
 .btn-shuffle {
-    top: 0.2rem;
-    font-size: 30px;
-    padding: 1px;
+    font-size: 25px;
     display: inline-block;
     position: relative;
     background-color: #8F8F8F;
+    margin-bottom: 2px;
     border-width: 1px;
     border-style: outset;
 }
@@ -208,18 +229,24 @@ button {
     width: 12px;
     height: 12px;
     border-radius: 10px;
-    background: rgb(107, 107, 107);
+    background: #6B6B6B;
 }
 
 .slider::-moz-range-thumb {
     width: 12px;
     height: 12px;
     border-radius: 10px;
-    background: rgb(107, 107, 107);
+    background: #6B6B6B;
 }
 
-.drop-zone-video {
-    width: 100%;
-    height: 100%;
+.drop-zone-video,
+.drop-zone-audio,
+.drop-zone-image {
+    object-fit: contain;
+    position: absolute;
     display: none;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
 }
