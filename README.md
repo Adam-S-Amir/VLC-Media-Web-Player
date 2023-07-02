@@ -15,3 +15,7 @@ I made a VLC Media Player themed video and picture player.
   - [ ] Make repeat functionality
   - [ ] Make skip forward/backward functionality
 - [ ] Make EQ
+
+## Tools Used
+
+<a href='https://github.com/aadsm/jsmediatags'>JS MediaTags</a> to scrap album art and file information.

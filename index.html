@@ -13,14 +13,69 @@
 <body>
     <div class="VLC-body">
         <div class="nav">
-            <a>Media</a>
-            <a>Playback</a>
-            <a>Audio</a>
-            <a>Video</a>
-            <a>Subtitle</a>
-            <a>Tools</a>
-            <a>View</a>
-            <a>Help</a>
+            <a class="media">Media</a>
+            <div class="menu" id="media">
+                <a>Open File</a>
+                <a>Open Multiple Files</a>
+                <a>Open Folder</a>
+                <a class="inactive">Open Disc</a>
+                <a>Open Network Stream</a>
+                <a>Open Capture Card</a>
+                <a>Open Location from Clipboard</a>
+                <a>Open Recent Media</a>
+                <a>Save Playlist to File</a>
+                <a>Convert / Save</a>
+                <a>Stream</a>
+                <a>Quit at the end of Playlist</a>
+                <a>Quit</a>
+            </div>
+            <a class="playback">Playback</a>
+            <div class="menu" id="playback">
+                <a>Title</a>
+                <a>Chapter</a>
+                <a>Program</a>
+                <a>Custom Bookmarks</a>
+                <a>Renderer</a>
+                <a>Speed</a>
+                <a>Jump Forward</a>
+                <a>Jump Backward</a>
+                <a>Jump to Specific Time</a>
+                <a>Play</a>
+                <a>Stop</a>
+                <a>Previous</a>
+                <a>Next</a>
+                <a>Record</a>
+            </div>
+            <a class="audio">Audio</a>
+            <div class="menu" id="audio">
+                <a>Hello</a>
+                <a>Ok</a>
+            </div>
+            <a class="video">Video</a>
+            <div class="menu" id="video">
+                <a>Hello</a>
+                <a>Ok</a>
+            </div>
+            <a class="subtitle">Subtitle</a>
+            <div class="menu" id="subtitle">
+                <a>Hello</a>
+                <a>Ok</a>
+            </div>
+            <a class="tools">Tools</a>
+            <div class="menu" id="tools">
+                <a>Hello</a>
+                <a>Ok</a>
+            </div>
+            <a class="view">View</a>
+            <div class="menu" id="view">
+                <a>Hello</a>
+                <a>Ok</a>
+            </div>
+            <a class="help">Help</a>
+            <div class="menu" id="help">
+                <a>Hello</a>
+                <a>Ok</a>
+            </div>
         </div>
         <div class="drop-zone">
             <img class="vlc-icon" id="vlc-icon" src="./assets/img/VLC.svg">
@@ -34,25 +89,26 @@
                 <span class="time-one" id="time-one">--:--</span>
                 <span class="time-two" id="time-two">--:--</span>
                 <div class="progress-barz">
-                    <div class="barz-inner"></div>
+                    <input type="range" step="0.01" value="0.01" class="barz-inner">
+                    <div class="barz-inner-2"></div>
                 </div>
             </div>
             <div class="control-bar">
-                <button class="btn-play" id="btn-play" onclick="Vplay()">⏵</button>
-                <button class="btn-pause" id="btn-pause" onclick="Vpause()">⏸</button>
-                <button class="btn-skip-backward" id="btn-skip-backward" title="Coming Soon!" onclick="null">⏮</button>
+                <button class="btn-play-pause" id="btn-play-pause" onclick="Vtoggle()">⏵</button>
+                <button class="btn-skip-backward" id="btn-skip-backward" onclick="Vskipbackward()">⏮</button>
                 <button class="btn-stop" id="btn-stop" onclick="Vstop()">⏹</button>
-                <button class="btn-skip-forward" id="btn-skip-forward" title="Coming Soon!" onclick="null">⏭</button>
-                <button class="btn-fullscreen" id="btn-fullscreen" onclick="Vfullscreen()">🔳</button>
+                <button class="btn-skip-forward" id="btn-skip-forward" onclick="Vskipforward()">⏭</button>
+                <button class="btn-fullscreen" id="btn-fullscreen" onclick="Vfullscreen()">⛶</button>
                 <button class="btn-eq" id="btn-eq" title="Coming Soon!" onclick="null">📊</button>
-                <button class="btn-playlist" id="btn-playlist" title="Coming Soon!" onclick="null">🎹</button>
-                <button class="btn-repeat" id="btn-repeat" title="Coming Soon!" onclick="null">🔁</button>
-                <button class="btn-shuffle" id="btn-shuffle" title="Coming Soon!" onclick="null">🔀</button>
+                <button class="btn-playlist" id="btn-playlist" title="Coming Soon!" onclick="null">≡</button>
+                <button class="btn-repeat" id="btn-repeat" onclick="toggleRepeat()">⥀</button>
+                <button class="btn-shuffle" id="btn-shuffle" title="Coming Soon!" onclick="null">⤨</button>
                 <div class="volume-slider">
                     <input type="range" min="0" max="100" value="100" class="slider" id="volume-range">
                 </div>
             </div>
         </div>
+        <script src="./assets/js/jsmediatags.min.js"></script>
         <script src="./assets/js/index.js"></script>
     </div>
 </body>

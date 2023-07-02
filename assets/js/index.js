@@ -1,8 +1,23 @@
 const videoElement = document.getElementById("drop-zone-video");
 const audioElement = document.getElementById("drop-zone-audio");
+const albumArtElement = document.getElementById('drop-zone-image');
 const progressBar = document.querySelector(".barz-inner");
+const progressBar2 = document.querySelector(".barz-inner-2");
+const volumeRange = document.getElementById('volume-range');
+const repeat = document.getElementById('btn-repeat');
 
+let jsmediatags = window.jsmediatags;
+let isDragging = false;
 let currentlyPlayingElement = null;
+let playpause = document.getElementById('btn-play-pause');
+
+progressBar.addEventListener("input", handleInput);
+
+function handleInput() {
+    const progress = progressBar.value;
+    seekTo(progress);
+    progressBar.addEventListener("input", handleInput);
+}
 
 document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     const dropZoneElement = inputElement.closest(".drop-zone");
@@ -59,7 +74,74 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
 function updateThumbnail(dropZoneElement, file) {
     let thumbnailElement = dropZoneElement.querySelector(".drop-zone-image");
 
-    // Show thumbnail for image files
+    function extractAlbumArt(file) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+
+            jsmediatags.read(file, {
+                onSuccess: (tag) => {
+                    const {
+                        tags
+                    } = tag;
+                    const {
+                        picture
+                    } = tags;
+
+                    if (picture) {
+                        const base64String = arrayBufferToBase64(picture.data);
+                        const imageUrl = `data:${picture.format};base64,${base64String}`;
+                        rmv = document.getElementById("vlc-icon");
+                        rmv.style.display = "none";                
+                        displayAlbumArt(imageUrl);
+                    } else {
+                        rmv = document.getElementById("vlc-icon");
+                        rmv.style.display = "none";
+                        imageUrl = './assets/img/Audio.svg';
+                        displayAlbumArt(imageUrl);
+                    }
+                },
+                onError: (error) => {
+                    console.error('Error reading MP3 tags:', error);
+                    rmv = document.getElementById("vlc-icon");
+                    rmv.style.display = "none";            
+                    imageUrl = './assets/img/Audio.svg';
+                    displayAlbumArt(imageUrl);
+                }
+            });
+        };
+
+        reader.onerror = (error) => {
+            console.error('Error reading file:', error);
+            displayAlbumArt(null);
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    function arrayBufferToBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+
+        return window.btoa(binary);
+    }
+
+    function displayAlbumArt(imageUrl) {
+
+        if (imageUrl) {
+            albumArtElement.src = imageUrl;
+            albumArtElement.style.display = 'block';
+        } else {
+            albumArtElement.src = '';
+            albumArtElement.style.display = 'none';
+        }
+    }
+
     if (file.type.startsWith("image/")) {
         const reader = new FileReader();
 
@@ -77,6 +159,8 @@ function updateThumbnail(dropZoneElement, file) {
         audioElement.style.display = "block";
         audioElement.src = URL.createObjectURL(file);
         audioElement.play();
+        playpause.innerHTML = '⏸'
+        extractAlbumArt(file);
     } else {
         thumbnailElement.style.display = "none";
         videoElement.style.display = "none";
@@ -98,12 +182,6 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     const dropZoneElement = inputElement.closest(".drop-zone");
     const videoElement = dropZoneElement.querySelector(".drop-zone-video");
 
-    dropZoneElement.addEventListener("click", (e) => {
-        inputElement.click();
-        videoElement.style.display = "block";
-        audioElement.style.display = "none";
-    });
-
     inputElement.addEventListener("change", (e) => {
         if (inputElement.files.length) {
             const file = inputElement.files[0];
@@ -112,11 +190,13 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
             if (file.type.startsWith("video/")) {
                 playVideo(fileURL);
                 videoElement.play();
+                playpause.innerHTML = '⏸'
                 videoElement.style.display = "block";
                 audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
                 playAudio(fileURL);
                 audioElement.play();
+                playpause.innerHTML = '⏸'
                 videoElement.style.display = "none";
                 audioElement.style.display = "block";
             }
@@ -145,12 +225,14 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
                 playVideo(fileURL);
                 videoElement.src = fileURL;
                 videoElement.play();
+                playpause.innerHTML = '⏸'
                 videoElement.style.display = "block";
                 audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
                 playAudio(fileURL);
                 audioElement.src = fileURL;
                 audioElement.play();
+                playpause.innerHTML = '⏸'
                 videoElement.style.display = "none";
                 audioElement.style.display = "block";
             }
@@ -165,7 +247,8 @@ function displayImage(file) {
         currentlyPlayingElement.src = "";
         currentlyPlayingElement.style.display = "none";
         currentlyPlayingElement = null;
-        progressBar.style.width = 0;
+        progressBar.value = 0;
+        playpause.innerHTML = '⏵';
         document.getElementById("time-one").innerHTML = '--:--'
         document.getElementById("time-two").innerHTML = '--:--'
     }
@@ -175,6 +258,8 @@ function displayImage(file) {
     document.getElementById("time-one").innerHTML = '--:--';
     document.getElementById("time-two").innerHTML = '--:--';
     reader.onload = () => {
+        progressBar.value = 0;
+        progressBar2.style.width = '0%';
         thumbnailElement.src = reader.result;
         thumbnailElement.style.display = "block";
     };
@@ -185,12 +270,14 @@ function displayImage(file) {
 function playVideo(fileURL) {
     if (currentlyPlayingElement === audioElement) {
         audioElement.src = "";
+        playpause.innerHTML = '⏵';
         audioElement.style.display = "none";
-        progressBar.style.width = 0;
+        progressBar.value = 0;
     }
 
     videoElement.src = fileURL;
     videoElement.play();
+    playpause.innerHTML = '⏸'
     videoElement.style.display = "block";
     currentlyPlayingElement = videoElement;
 }
@@ -198,12 +285,14 @@ function playVideo(fileURL) {
 function playAudio(fileURL) {
     if (currentlyPlayingElement === videoElement) {
         videoElement.src = "";
+        playpause.innerHTML = '⏵';
         videoElement.style.display = "none";
-        progressBar.style.width = 0;
+        progressBar.value = 0;
     }
 
     audioElement.src = fileURL;
     audioElement.play();
+    playpause.innerHTML = '⏸'
     audioElement.style.display = "block";
     currentlyPlayingElement = audioElement;
 }
@@ -251,8 +340,16 @@ videoElement.addEventListener("play", () => {
         const currentTime = videoElement.currentTime;
         const duration = videoElement.duration;
         const progress = (currentTime / duration) * 100;
-        progressBar.style.width = `${progress}%`;
+        progressBar.value = progress;
+        progressBar2.style.width = `${progress}%`;
+        if (!isDragging) {
+            const currentTime = videoElement.currentTime;
+            const duration = videoElement.duration;
+            const progress = (currentTime / duration) * 100;
+            progressBar.value = progress;
+        }
     }
+
 });
 
 audioElement.addEventListener("play", () => {
@@ -262,18 +359,112 @@ audioElement.addEventListener("play", () => {
         const currentTime = audioElement.currentTime;
         const duration = audioElement.duration;
         const progress = (currentTime / duration) * 100;
-        progressBar.style.width = `${progress}%`;
+        progressBar.value = progress;
+        progressBar2.style.width = `${progress}%`;
+        if (!isDragging) {
+            const currentTime = audioElement.currentTime;
+            const duration = audioElement.duration;
+            const progress = (currentTime / duration) * 100;
+            progressBar.value = progress;
+            progressBar2.style.width = `${progress}%`;
+        }
     }
 });
 
-function Vplay() {
-    videoElement.play();
-    audioElement.play();
+function startDrag() {
+    isDragging = true;
 }
 
-function Vpause() {
-    videoElement.pause();
-    audioElement.pause();
+function handleDrag(e) {
+    if (isDragging) {
+        const progressBarRect = progressBar.getBoundingClientRect();
+        const progressWidth = e.clientX - progressBarRect.left;
+        const progressBarWidth = progressBarRect.width;
+        const progress = (progressWidth / progressBarWidth) * 100;
+        progressBar.value = progress;
+        seekTo(progress);
+    }
+}
+
+function endDrag() {
+    if (isDragging) {
+        isDragging = false;
+    }
+}
+
+function seekTo(progress) {
+    const duration = currentlyPlayingElement.duration;
+    if (!isNaN(duration) && isFinite(duration)) {
+        const currentTime = (progress / 100) * duration;
+        currentlyPlayingElement.currentTime = currentTime;
+    }
+}
+
+progressBar.addEventListener("mousedown", startDrag);
+progressBar.addEventListener("mousemove", handleDrag);
+progressBar.addEventListener("mouseup", endDrag);
+
+let rewindInterval;
+let isRewinding = false;
+let isSeeking = false;
+let playbackRate = 1;
+let isRepeating = false;
+
+function Vskipbackward() {
+    if (!isRewinding) {
+        clearInterval(rewindInterval);
+        isRewinding = true;
+        playbackRate = 2;
+        currentlyPlayingElement.playbackRate = playbackRate;
+        currentlyPlayingElement.play();
+        rewindInterval = setInterval(() => {
+            if (currentlyPlayingElement.currentTime <= 0) {
+                currentlyPlayingElement.pause();
+                isRewinding = false;
+                clearInterval(rewindInterval);
+            } else {
+                currentlyPlayingElement.currentTime -= 2;
+            }
+        }, 100);
+    }
+}
+
+function Vskipforward() {
+    if (!isSeeking) {
+        isSeeking = true;
+        playbackRate = 2;
+        currentlyPlayingElement.playbackRate = playbackRate;
+        currentlyPlayingElement.play();
+        seekInterval = setInterval(() => {
+            if (currentlyPlayingElement.currentTime <= 0) {
+                currentlyPlayingElement.pause();
+            } else {
+                currentlyPlayingElement.currentTime += 2;
+            }
+        }, 100);
+    }
+}
+
+function Vtoggle() {
+    if (isSeeking) {
+        clearInterval(seekInterval);
+        isSeeking = false;
+        currentlyPlayingElement.playbackRate = 1;
+        currentlyPlayingElement.pause();
+        currentlyPlayingElement.play();
+    } else if (isRewinding) {
+        clearInterval(rewindInterval);
+        isRewinding = false;
+        currentlyPlayingElement.playbackRate = 1;
+        currentlyPlayingElement.pause();
+        currentlyPlayingElement.play();
+    } else if (currentlyPlayingElement.paused) {
+        currentlyPlayingElement.play();
+        playpause.innerHTML = '⏸'
+    } else {
+        currentlyPlayingElement.pause();
+        playpause.innerHTML = '⏵';
+    }
 }
 
 function Vstop() {
@@ -281,16 +472,17 @@ function Vstop() {
         currentlyPlayingElement.src = "";
         currentlyPlayingElement.style.display = "none";
         currentlyPlayingElement = null;
-        progressBar.style.width = 0;
+        progressBar.value = 0.01;
         document.getElementById("time-one").innerHTML = '--:--'
         document.getElementById("time-two").innerHTML = '--:--'
         Vstop();
+        playpause.innerHTML = '⏵';
     } else {
         document.getElementById("time-one").innerHTML = '--:--';
         document.getElementById("time-two").innerHTML = '--:--';
+        playpause.innerHTML = '⏵';
     }
 }
-
 
 function Vfullscreen() {
     const docElement = document.documentElement;
@@ -301,7 +493,7 @@ function Vfullscreen() {
         !document.webkitFullscreenElement &&
         !document.msFullscreenElement
     ) {
-        // Enter fullscreen
+
         if (docElement.requestFullscreen) {
             docElement.requestFullscreen();
         } else if (docElement.mozRequestFullScreen) {
@@ -312,7 +504,7 @@ function Vfullscreen() {
             docElement.msRequestFullscreen();
         }
     } else {
-        // Exit fullscreen
+
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.mozCancelFullScreen) {
@@ -325,7 +517,16 @@ function Vfullscreen() {
     }
 }
 
-const volumeRange = document.getElementById('volume-range');
+function toggleRepeat() {
+    isRepeating = !isRepeating;
+    if (isRepeating) {
+        repeat.classList.toggle('repeat-active');
+        currentlyPlayingElement.loop = true;
+    } else {
+        repeat.classList.toggle('repeat-active');
+        currentlyPlayingElement.loop = false;
+    }
+}
 
 volumeRange.addEventListener('input', () => {
     const volume = volumeRange.value / 100;
