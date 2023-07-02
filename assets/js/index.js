@@ -5,11 +5,11 @@ const progressBar = document.querySelector(".barz-inner");
 const progressBar2 = document.querySelector(".barz-inner-2");
 const volumeRange = document.getElementById('volume-range');
 const repeat = document.getElementById('btn-repeat');
+const playpause = document.getElementById('btn-play-pause');
 
 let jsmediatags = window.jsmediatags;
 let isDragging = false;
 let currentlyPlayingElement = null;
-let playpause = document.getElementById('btn-play-pause');
 
 progressBar.addEventListener("input", handleInput);
 
@@ -21,21 +21,42 @@ function handleInput() {
 
 document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     const dropZoneElement = inputElement.closest(".drop-zone");
+    const openfile = document.getElementById('Open-File');
+    const multiplefiles = document.getElementById('Multiple-Files');
 
     dropZoneElement.addEventListener("click", (e) => {
         inputElement.click();
+    });
+
+    openfile.addEventListener("click", (e) => {
+        inputElement.click();
+    });
+
+    multiplefiles.addEventListener("click", (e) => {
+        const files = Array.from(inputElement.files);
+        inputElement.click();
+        handleFiles(files);
     });
 
     inputElement.addEventListener("change", (e) => {
         if (inputElement.files.length) {
             updateThumbnail(dropZoneElement, inputElement.files[0]);
             const file = inputElement.files[0];
+            const fileURL = URL.createObjectURL(file);
             if (file.type.startsWith("image/")) {
-                displayImage(file);
+                displayImage(fileURL);
             } else if (file.type.startsWith("video/")) {
-                playVideo(file);
+                playVideo(fileURL);
+                videoElement.play();
+                playpause.innerHTML = '⏸'
+                videoElement.style.display = "block";
+                audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
-                playAudio(file);
+                playAudio(fileURL);
+                audioElement.play();
+                playpause.innerHTML = '⏸'
+                videoElement.style.display = "none";
+                audioElement.style.display = "block";
             }
         }
     });
@@ -51,6 +72,22 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
         });
     });
 
+    function handleFiles(files) {
+        files.forEach((file) => {
+            console.log("File:", file);
+
+            const fileURL = URL.createObjectURL(file);
+
+            if (file.type.startsWith("image/")) {
+                displayImage(fileURL);
+            } else if (file.type.startsWith("video/")) {
+                playVideo(fileURL);
+            } else if (file.type.startsWith("audio/")) {
+                playAudio(fileURL);
+            }
+        });
+    }
+
     dropZoneElement.addEventListener("drop", (e) => {
         e.preventDefault();
 
@@ -61,9 +98,19 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
             if (file.type.startsWith("image/")) {
                 displayImage(file);
             } else if (file.type.startsWith("video/")) {
-                playVideo(file);
+                playVideo(fileURL);
+                videoElement.src = fileURL;
+                videoElement.play();
+                playpause.innerHTML = '⏸'
+                videoElement.style.display = "block";
+                audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
-                playAudio(file);
+                playAudio(fileURL);
+                audioElement.src = fileURL;
+                audioElement.play();
+                playpause.innerHTML = '⏸'
+                videoElement.style.display = "none";
+                audioElement.style.display = "block";
             }
         }
 
@@ -92,7 +139,7 @@ function updateThumbnail(dropZoneElement, file) {
                         const base64String = arrayBufferToBase64(picture.data);
                         const imageUrl = `data:${picture.format};base64,${base64String}`;
                         rmv = document.getElementById("vlc-icon");
-                        rmv.style.display = "none";                
+                        rmv.style.display = "none";
                         displayAlbumArt(imageUrl);
                     } else {
                         rmv = document.getElementById("vlc-icon");
@@ -104,7 +151,7 @@ function updateThumbnail(dropZoneElement, file) {
                 onError: (error) => {
                     console.error('Error reading MP3 tags:', error);
                     rmv = document.getElementById("vlc-icon");
-                    rmv.style.display = "none";            
+                    rmv.style.display = "none";
                     imageUrl = './assets/img/Audio.svg';
                     displayAlbumArt(imageUrl);
                 }
@@ -177,70 +224,6 @@ function updateThumbnail(dropZoneElement, file) {
 
     thumbnailElement.dataset.label = file.name;
 }
-
-document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
-    const dropZoneElement = inputElement.closest(".drop-zone");
-    const videoElement = dropZoneElement.querySelector(".drop-zone-video");
-
-    inputElement.addEventListener("change", (e) => {
-        if (inputElement.files.length) {
-            const file = inputElement.files[0];
-            const fileURL = URL.createObjectURL(file);
-
-            if (file.type.startsWith("video/")) {
-                playVideo(fileURL);
-                videoElement.play();
-                playpause.innerHTML = '⏸'
-                videoElement.style.display = "block";
-                audioElement.style.display = "none";
-            } else if (file.type.startsWith("audio/")) {
-                playAudio(fileURL);
-                audioElement.play();
-                playpause.innerHTML = '⏸'
-                videoElement.style.display = "none";
-                audioElement.style.display = "block";
-            }
-        }
-    });
-
-    dropZoneElement.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dropZoneElement.classList.add("drop-zone--over");
-    });
-
-    ["dragleave", "dragend"].forEach((type) => {
-        dropZoneElement.addEventListener(type, (e) => {
-            dropZoneElement.classList.remove("drop-zone--over");
-        });
-    });
-
-    dropZoneElement.addEventListener("drop", (e) => {
-        e.preventDefault();
-
-        if (e.dataTransfer.files.length) {
-            const file = e.dataTransfer.files[0];
-            const fileURL = URL.createObjectURL(file);
-
-            if (file.type.startsWith("video/")) {
-                playVideo(fileURL);
-                videoElement.src = fileURL;
-                videoElement.play();
-                playpause.innerHTML = '⏸'
-                videoElement.style.display = "block";
-                audioElement.style.display = "none";
-            } else if (file.type.startsWith("audio/")) {
-                playAudio(fileURL);
-                audioElement.src = fileURL;
-                audioElement.play();
-                playpause.innerHTML = '⏸'
-                videoElement.style.display = "none";
-                audioElement.style.display = "block";
-            }
-        }
-
-        dropZoneElement.classList.remove("drop-zone--over");
-    });
-});
 
 function displayImage(file) {
     if (currentlyPlayingElement) {

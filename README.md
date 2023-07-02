@@ -1,6 +1,7 @@
 # VLC-Media-Web-Player
 I made a VLC Media Player themed video and picture player.
 
+Getting ready for new release of MagnusWare 3.0
 ### Todo
 
 - [ ] Unblocked Youtube video player

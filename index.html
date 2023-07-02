@@ -15,8 +15,8 @@
         <div class="nav">
             <a class="media">Media</a>
             <div class="menu" id="media">
-                <a>Open File</a>
-                <a>Open Multiple Files</a>
+                <a id="Open-File">Open File</a>
+                <a id="Multiple-Files">Open Multiple Files</a>
                 <a>Open Folder</a>
                 <a class="inactive">Open Disc</a>
                 <a>Open Network Stream</a>
@@ -48,38 +48,68 @@
             </div>
             <a class="audio">Audio</a>
             <div class="menu" id="audio">
-                <a>Hello</a>
-                <a>Ok</a>
+                <a>Audio Track</a>
+                <a>Audio Device</a>
+                <a>Stereo Mode</a>
+                <a>Visualization</a>
+                <a>Increase Volume</a>
+                <a>Decrease Volume</a>
+                <a>Mute</a>
             </div>
             <a class="video">Video</a>
             <div class="menu" id="video">
-                <a>Hello</a>
-                <a>Ok</a>
+                <a>Video Track</a>
+                <a>Fullscreen</a>
+                <a>Always Fit to Window</a>
+                <a>Set as Wallpaper</a>
+                <a>Zoom</a>
+                <a>Aspect Ratio</a>
+                <a>Crop</a>
+                <a>Deinterlace</a>
+                <a>Deinterlace Mode</a>
+                <a>Take Snapshot</a>
             </div>
             <a class="subtitle">Subtitle</a>
             <div class="menu" id="subtitle">
-                <a>Hello</a>
-                <a>Ok</a>
+                <a>Add Subtitle File</a>
+                <a>Sub Track</a>
             </div>
             <a class="tools">Tools</a>
             <div class="menu" id="tools">
-                <a>Hello</a>
-                <a>Ok</a>
+                <a>Effects & Filters</a>
+                <a>Track Synchronization</a>
+                <a>Media Information</a>
+                <a>Codec Information</a>
+                <a>VLM Configuration</a>
+                <a>Program Guide</a>
+                <a>Messages</a>
+                <a>Plugins & Extensions</a>
+                <a>Customize Interface</a>
+                <a>Preferences</a>
             </div>
             <a class="view">View</a>
             <div class="menu" id="view">
-                <a>Hello</a>
-                <a>Ok</a>
+                <a>Playlist</a>
+                <a>Docked Playlist</a>
+                <a>Playlist View Mode</a>
+                <a>Always On Top</a>
+                <a>Minimal Interface</a>
+                <a>Fullscreen Interface</a>
+                <a>Advanced Controls</a>
+                <a>Status Bar</a>
+                <a>Add Interface</a>
+                <a>VLsUb</a>
             </div>
             <a class="help">Help</a>
             <div class="menu" id="help">
-                <a>Hello</a>
-                <a>Ok</a>
+                <a>Help</a>
+                <a>Check for Updates...</a>
+                <a>About</a>
             </div>
         </div>
         <div class="drop-zone">
             <img class="vlc-icon" id="vlc-icon" src="./assets/img/VLC.svg">
-            <input type="file" name="the-file" class="drop-zone-input">
+            <input type="file" name="the-file" class="drop-zone-input" accept="image/*, audio/*, video/*">
             <video class="drop-zone-video" id="drop-zone-video"></video>
             <audio class="drop-zone-audio" id="drop-zone-audio"></audio>
             <img class="drop-zone-image" id="drop-zone-image">

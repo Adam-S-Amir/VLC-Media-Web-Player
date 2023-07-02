@@ -4,6 +4,7 @@ html {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 500;
+    outline: none;
 }
 
 body {
@@ -41,15 +42,15 @@ body {
     position: fixed;
     z-index: 2;
     width: 200px;
-    border: 2px solid #8F8F8F;
+    border: 2px solid #FFFDD0;
     animation-name: fadeIn;
     animation-duration: 0.2s;
     animation-timing-function: ease-in-out;
 }
 
 .menu a {
-    background-color: #C7CFCF;
-    border-bottom: 1px solid #8F8F8F;
+    background-color: #FCFBF4;
+    border-bottom: 1px solid #C7CFCF;
     color: black;
     display: block;
     text-align: left;
@@ -59,7 +60,7 @@ body {
 .menu a.inactive,
 .menu a.inactive:hover {
     color: #6B6B6B;
-    background-color: #C7CFCF;
+    background-color: #FCFBF4;
 }
 
 #playback {
@@ -67,27 +68,27 @@ body {
 }
 
 #audio {
-    left: 120px;
+    left: 122px;
 }
 
 #video {
-    left: 172px;
+    left: 176px;
 }
 
 #subtitle {
-    left: 223px;
+    left: 228px;
 }
 
 #tools {
-    left: 284px;
+    left: 290px;
 }
 
 #view {
-    left: 332px;
+    left: 338px;
 }
 
 #help {
-    left: 378px;
+    left: 385px;
 }
 
 .media:hover+#media,
