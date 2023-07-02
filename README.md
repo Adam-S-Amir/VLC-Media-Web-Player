@@ -6,15 +6,15 @@ Getting ready for new release of MagnusWare 3.0
 
 - [ ] Unblocked Youtube video player
 - [ ] Show current video information
-- [ ] Play audio files
-- [ ] Make more user friendly
-  - [ ] Add little circle to progress bar like the VLC Windows version
+- [X] Play audio files
+- [X] Make more user friendly
+  - [X] Add little circle to progress bar like the VLC Windows version
   - [ ] Make volume slider look like the VLC Windows version
-  - [ ] Make a play/pause toggle button instead of two seperate buttons
+  - [X] Make a play/pause toggle button instead of two seperate buttons
 - [ ] Make playlist functionality
 - [ ] Make shuffle functionality
-  - [ ] Make repeat functionality
-  - [ ] Make skip forward/backward functionality
+  - [X] Make repeat functionality
+  - [X] Make skip forward/backward functionality
 - [ ] Make EQ
 
 ## Tools Used
