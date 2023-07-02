@@ -9,9 +9,9 @@ I made a VLC Media Player themed video and picture player.
 - [X] Make more user friendly
   - [ ] Add little circle to progress bar like the VLC Windows version
   - [ ] Make volume slider look like the VLC Windows version
-  - [ ] Make a play/pause toggle button instead of two seperate buttons
+  - [X] Make a play/pause toggle button instead of two seperate buttons
+- [ ] Make EQ
 - [ ] Make playlist functionality
+  - [ ] Make skip forward/backward functionality
 - [ ] Make shuffle functionality
   - [ ] Make repeat functionality
-  - [ ] Make skip forward/backward functionality
-- [ ] Make EQ
