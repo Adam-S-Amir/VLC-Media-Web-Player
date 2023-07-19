@@ -186,7 +186,7 @@ body {
 }
 
 .progress-bar {
-    height: 10px;
+/*     height: 10px; */
     position: relative;
     padding-top: 7px;
     padding-bottom: 7px;
