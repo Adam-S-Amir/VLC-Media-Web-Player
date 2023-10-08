@@ -1,7 +1,7 @@
 const videoElement = document.getElementById("drop-zone-video");
 const audioElement = document.getElementById("drop-zone-audio");
 const albumArtElement = document.getElementById('drop-zone-image');
-const progressBar = document.querySelector(".barz-inner");
+const progressBar = document.getElementById("progressbar");
 const progressBar2 = document.querySelector(".barz-inner-2");
 const volumeRange = document.getElementById('volume-range');
 const repeat = document.getElementById('btn-repeat');
@@ -24,6 +24,8 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     const openfile = document.getElementById('Open-File');
     const multiplefiles = document.getElementById('Multiple-Files');
 
+    const mute = document.getElementById('Mute');
+
     dropZoneElement.addEventListener("click", (e) => {
         inputElement.click();
     });
@@ -33,14 +35,25 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     });
 
     multiplefiles.addEventListener("click", (e) => {
-        const files = Array.from(inputElement.files);
+        document.querySelector('.drop-zone-input').setAttribute('multiple', 'multiple');
         inputElement.click();
-        handleFiles(files);
     });
+
+
+    mute.addEventListener("click", (e) => {
+        if (currentlyPlayingElement.muted === true) {
+            currentlyPlayingElement.muted = false;
+            mute.innerHTML = 'Mute';
+        } else {
+            currentlyPlayingElement.muted = true;
+            mute.innerHTML = 'Unmute';
+        }
+    })
 
     inputElement.addEventListener("change", (e) => {
         if (inputElement.files.length) {
             updateThumbnail(dropZoneElement, inputElement.files[0]);
+            handleFiles(Array.from(inputElement.files));
             const file = inputElement.files[0];
             const fileURL = URL.createObjectURL(file);
             if (file.type.startsWith("image/")) {
@@ -73,19 +86,33 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     });
 
     function handleFiles(files) {
-        files.forEach((file) => {
-            console.log("File:", file);
-
+        const filenames = Array.from(files).map((file) => file.name);
+        console.log(filenames.join(",\n"));
+        const fileVars = [];
+        files.forEach((file, index) => {
             const fileURL = URL.createObjectURL(file);
-
             if (file.type.startsWith("image/")) {
+                const imageName = `image${index + 1}`;
+                fileVars[imageName] = fileURL;
                 displayImage(fileURL);
             } else if (file.type.startsWith("video/")) {
+                const videoName = `video${index + 1}`;
+                fileVars[videoName] = fileURL;
                 playVideo(fileURL);
             } else if (file.type.startsWith("audio/")) {
+                const audioName = `audio${index + 1}`;
+                fileVars[audioName] = fileURL;
                 playAudio(fileURL);
             }
         });
+        console.log("File Variables:", fileVars);
+        const fileVarKeys = Object.keys(fileVars);
+        let audioElementsCount = 0;
+        let audioEndedCount = 0;
+        for (let i = 1; i < fileVarKeys.length; i++) {
+            const fileVarKey = fileVarKeys[i];
+            const fileVarValue = fileVars[fileVarKey];
+        }
     }
 
     dropZoneElement.addEventListener("drop", (e) => {
@@ -94,6 +121,7 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
         if (e.dataTransfer.files.length) {
             inputElement.files = e.dataTransfer.files;
             updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            handleFiles(Array.from(e.dataTransfer.files));
             const file = e.dataTransfer.files[0];
             if (file.type.startsWith("image/")) {
                 displayImage(file);
@@ -230,7 +258,8 @@ function displayImage(file) {
         currentlyPlayingElement.src = "";
         currentlyPlayingElement.style.display = "none";
         currentlyPlayingElement = null;
-        progressBar.value = 0;
+        progressBar.setAttribute('value', '0.01');
+        progressBar2.style.width = "0%";
         playpause.innerHTML = '⏵';
         document.getElementById("time-one").innerHTML = '--:--'
         document.getElementById("time-two").innerHTML = '--:--'
@@ -241,8 +270,8 @@ function displayImage(file) {
     document.getElementById("time-one").innerHTML = '--:--';
     document.getElementById("time-two").innerHTML = '--:--';
     reader.onload = () => {
-        progressBar.value = 0;
-        progressBar2.style.width = '0%';
+        progressBar.setAttribute('value', '0.01');
+        progressBar2.style.width = "0%";
         thumbnailElement.src = reader.result;
         thumbnailElement.style.display = "block";
     };
@@ -332,7 +361,6 @@ videoElement.addEventListener("play", () => {
             progressBar.value = progress;
         }
     }
-
 });
 
 audioElement.addEventListener("play", () => {
