@@ -45,7 +45,7 @@ body {
     position: fixed;
     z-index: 2;
     width: 200px;
-    border: 2px solid #FFFDD0;
+    border: 2px solid #8F8F8F;
     animation-name: fadeIn;
     animation-duration: 0.2s;
     animation-timing-function: ease-in-out;
