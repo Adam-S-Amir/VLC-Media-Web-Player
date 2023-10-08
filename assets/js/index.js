@@ -21,8 +21,9 @@ function handleInput() {
 
 document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
     const dropZoneElement = inputElement.closest(".drop-zone");
-    const openfile = document.getElementById('Open-File');
-    const multiplefiles = document.getElementById('Multiple-Files');
+    const openfile = document.getElementById('Menu-Open-File');
+    const multiplefiles = document.getElementById('Menu-Multiple-Files');
+    const menuquit = document.getElementById('Menu-Quit');
 
     const mute = document.getElementById('Mute');
 
@@ -39,6 +40,9 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
         inputElement.click();
     });
 
+    menuquit.addEventListener("click", (e) => {
+        close()
+    });
 
     mute.addEventListener("click", (e) => {
         if (currentlyPlayingElement.muted === true) {
