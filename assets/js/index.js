@@ -1,3 +1,4 @@
+const embedElement = document.getElementById("drop-zone-all");
 const videoElement = document.getElementById("drop-zone-video");
 const audioElement = document.getElementById("drop-zone-audio");
 const albumArtElement = document.getElementById('drop-zone-image');
@@ -63,11 +64,11 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
             if (file.type.startsWith("image/")) {
                 displayImage(fileURL);
             } else if (file.type.startsWith("video/")) {
-                playVideo(fileURL);
-                videoElement.play();
+                setEmbed(fileURL);
+                embedElement.play();
                 playpause.innerHTML = '⏸'
-                videoElement.style.display = "block";
-                audioElement.style.display = "none";
+                // videoElement.style.display = "block";
+                // audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
                 playAudio(fileURL);
                 audioElement.play();
@@ -102,7 +103,7 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
             } else if (file.type.startsWith("video/")) {
                 const videoName = `video${index + 1}`;
                 fileVars[videoName] = fileURL;
-                playVideo(fileURL);
+                setEmbed(fileURL);
             } else if (file.type.startsWith("audio/")) {
                 const audioName = `audio${index + 1}`;
                 fileVars[audioName] = fileURL;
@@ -130,12 +131,11 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
             if (file.type.startsWith("image/")) {
                 displayImage(file);
             } else if (file.type.startsWith("video/")) {
-                playVideo(fileURL);
-                videoElement.src = fileURL;
-                videoElement.play();
+                setEmbed(fileURL);
+                embedElement.play();
                 playpause.innerHTML = '⏸'
-                videoElement.style.display = "block";
-                audioElement.style.display = "none";
+                // videoElement.style.display = "block";
+                // audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
                 playAudio(fileURL);
                 audioElement.src = fileURL;
@@ -281,6 +281,13 @@ function displayImage(file) {
     };
 
     reader.readAsDataURL(file);
+}
+
+function setEmbed(fileURL) {
+    embedElement.src = fileURL;
+    embedElement.play();
+    progressBar.value = 0;
+    playpause.innerHTML = '⏸';
 }
 
 function playVideo(fileURL) {
