@@ -7,7 +7,7 @@ html {
 }
 
 body {
-    background-color: grey;
+    background-color: red;
 }
 
 * {
@@ -189,7 +189,7 @@ body {
 }
 
 .progress-bar {
-/*     height: 10px; */
+    /*     height: 10px; */
     position: relative;
     padding-top: 7px;
     padding-bottom: 7px;
@@ -382,7 +382,8 @@ button {
 
 .drop-zone-video,
 .drop-zone-audio,
-.drop-zone-image {
+.drop-zone-image,
+.drop-zone-all {
     object-fit: contain;
     position: absolute;
     display: none;

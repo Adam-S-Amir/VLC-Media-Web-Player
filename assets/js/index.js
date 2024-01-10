@@ -67,14 +67,10 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
                 setEmbed(fileURL);
                 embedElement.play();
                 playpause.innerHTML = '⏸'
-                // videoElement.style.display = "block";
-                // audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
-                playAudio(fileURL);
-                audioElement.play();
+                setEmbed(fileURL);
+                embedElement.play();
                 playpause.innerHTML = '⏸'
-                videoElement.style.display = "none";
-                audioElement.style.display = "block";
             }
         }
     });
@@ -107,16 +103,13 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
             } else if (file.type.startsWith("audio/")) {
                 const audioName = `audio${index + 1}`;
                 fileVars[audioName] = fileURL;
-                playAudio(fileURL);
+                setEmbed(fileURL);
             }
         });
         console.log("File Variables:", fileVars);
         const fileVarKeys = Object.keys(fileVars);
-        let audioElementsCount = 0;
-        let audioEndedCount = 0;
         for (let i = 1; i < fileVarKeys.length; i++) {
             const fileVarKey = fileVarKeys[i];
-            const fileVarValue = fileVars[fileVarKey];
         }
     }
 
@@ -134,15 +127,10 @@ document.querySelectorAll(".drop-zone-input").forEach((inputElement) => {
                 setEmbed(fileURL);
                 embedElement.play();
                 playpause.innerHTML = '⏸'
-                // videoElement.style.display = "block";
-                // audioElement.style.display = "none";
             } else if (file.type.startsWith("audio/")) {
-                playAudio(fileURL);
-                audioElement.src = fileURL;
-                audioElement.play();
+                setEmbed(fileURL);
+                embedElement.play();
                 playpause.innerHTML = '⏸'
-                videoElement.style.display = "none";
-                audioElement.style.display = "block";
             }
         }
 
@@ -213,11 +201,11 @@ function updateThumbnail(dropZoneElement, file) {
     function displayAlbumArt(imageUrl) {
 
         if (imageUrl) {
-            albumArtElement.src = imageUrl;
-            albumArtElement.style.display = 'block';
+            embedElement.src = imageUrl;
+            embedElement.style.display = 'block';
         } else {
-            albumArtElement.src = '';
-            albumArtElement.style.display = 'none';
+            embedElement.src = '';
+            embedElement.style.display = 'none';
         }
     }
 
@@ -225,25 +213,19 @@ function updateThumbnail(dropZoneElement, file) {
         const reader = new FileReader();
 
         reader.onload = () => {
-            thumbnailElement.src = reader.result;
-            thumbnailElement.style.display = "block";
-            videoElement.style.display = "none";
-            audioElement.style.display = "none";
+            embedElement.src = reader.result;
+            embedElement.style.display = "block";
         };
 
         reader.readAsDataURL(file);
     } else if (file.type.startsWith("audio/")) {
-        thumbnailElement.style.display = "none";
-        videoElement.style.display = "none";
-        audioElement.style.display = "block";
-        audioElement.src = URL.createObjectURL(file);
-        audioElement.play();
+        embedElement.style.display = "block";
+        embedElement.src = URL.createObjectURL(file);
+        embedElement.play();
         playpause.innerHTML = '⏸'
         extractAlbumArt(file);
     } else {
-        thumbnailElement.style.display = "none";
-        videoElement.style.display = "none";
-        audioElement.style.display = "none";
+        embedElement.style.display = "none";
     }
 
     if (!thumbnailElement) {
@@ -269,15 +251,14 @@ function displayImage(file) {
         document.getElementById("time-two").innerHTML = '--:--'
     }
 
-    const thumbnailElement = document.getElementById("thumbnail");
     const reader = new FileReader();
     document.getElementById("time-one").innerHTML = '--:--';
     document.getElementById("time-two").innerHTML = '--:--';
     reader.onload = () => {
         progressBar.setAttribute('value', '0.01');
         progressBar2.style.width = "0%";
-        thumbnailElement.src = reader.result;
-        thumbnailElement.style.display = "block";
+        embedElement.src = reader.result;
+        embedElement.style.display = "block";
     };
 
     reader.readAsDataURL(file);
@@ -320,29 +301,15 @@ function playAudio(fileURL) {
     currentlyPlayingElement = audioElement;
 }
 
-videoElement.addEventListener("timeupdate", () => {
-    const currentTime = videoElement.currentTime;
+embedElement.addEventListener("timeupdate", () => {
+    const currentTime = embedElement.currentTime;
     const formattedTime = formatTime(currentTime);
     let Ctime = document.getElementById("time-one");
     Ctime.innerHTML = formattedTime;
 });
 
-audioElement.addEventListener("timeupdate", () => {
-    const currentTime = audioElement.currentTime;
-    const formattedTime = formatTime(currentTime);
-    let Ctime = document.getElementById("time-one");
-    Ctime.innerHTML = formattedTime;
-});
-
-videoElement.addEventListener("loadedmetadata", () => {
-    const duration = videoElement.duration;
-    const formattedDuration = formatTime(duration);
-    let Ctime = document.getElementById("time-two");
-    Ctime.innerHTML = formattedDuration;
-});
-
-audioElement.addEventListener("loadedmetadata", () => {
-    const duration = audioElement.duration;
+embedElement.addEventListener("loadedmetadata", () => {
+    const duration = embedElement.duration;
     const formattedDuration = formatTime(duration);
     let Ctime = document.getElementById("time-two");
     Ctime.innerHTML = formattedDuration;
@@ -356,39 +323,20 @@ function formatTime(time) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-videoElement.addEventListener("play", () => {
-    videoElement.addEventListener("timeupdate", updateProgressBar);
+embedElement.addEventListener("play", () => {
+    embedElement.addEventListener("timeupdate", updateProgressBar);
 
     function updateProgressBar() {
-        const currentTime = videoElement.currentTime;
-        const duration = videoElement.duration;
+        const currentTime = embedElement.currentTime;
+        const duration = embedElement.duration;
         const progress = (currentTime / duration) * 100;
         progressBar.value = progress;
         progressBar2.style.width = `${progress}%`;
         if (!isDragging) {
-            const currentTime = videoElement.currentTime;
-            const duration = videoElement.duration;
+            const currentTime = embedElement.currentTime;
+            const duration = embedElement.duration;
             const progress = (currentTime / duration) * 100;
             progressBar.value = progress;
-        }
-    }
-});
-
-audioElement.addEventListener("play", () => {
-    audioElement.addEventListener("timeupdate", updateProgressBar);
-
-    function updateProgressBar() {
-        const currentTime = audioElement.currentTime;
-        const duration = audioElement.duration;
-        const progress = (currentTime / duration) * 100;
-        progressBar.value = progress;
-        progressBar2.style.width = `${progress}%`;
-        if (!isDragging) {
-            const currentTime = audioElement.currentTime;
-            const duration = audioElement.duration;
-            const progress = (currentTime / duration) * 100;
-            progressBar.value = progress;
-            progressBar2.style.width = `${progress}%`;
         }
     }
 });
@@ -552,6 +500,5 @@ function toggleRepeat() {
 
 volumeRange.addEventListener('input', () => {
     const volume = volumeRange.value / 100;
-    videoElement.volume = volume;
-    audioElement.volume = volume;
+    embedElement.volume = volume;
 });

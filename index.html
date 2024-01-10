@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/stylesheet.css">
     <link rel="icon" type="image/x-icon" href="./assets/img/VLC.svg">
     <title>VLC Media Player</title>
@@ -108,19 +108,16 @@
             </div>
         </div>
         <embed class="drop-zone">
-            <img class="vlc-icon" id="vlc-icon" src="./assets/img/VLC.svg">
-            <input type="file" name="the-file" class="drop-zone-input" accept="image/*, audio/*, video/*">
-<!--        <video class="drop-zone-video" id="drop-zone-video"></video>
-            <audio class="drop-zone-audio" id="drop-zone-audio"></audio> -->
+            <img class="vlc-icon" id="vlc-icon" src="./assets/img/VLC.svg" alt="VLC-Icon">
+            <input title="Drop Your File Here" type="file" name="the-file" class="drop-zone-input" accept="image/*, audio/*, video/*">
             <embed class="drop-zone-all" id="drop-zone-all">
-            <img class="drop-zone-image" id="drop-zone-image">
         </div>
         <div class="bottom-bar">
             <div class="progress-bar">
                 <span class="time-one" id="time-one">--:--</span>
                 <span class="time-two" id="time-two">--:--</span>
                 <div class="progress-barz">
-                    <input id="progressbar" type="range" step="0.01" value="0.01" class="barz-inner">
+                    <input title="Progress Bar" id="progressbar" type="range" step="0.01" value="0.01" class="barz-inner">
                     <div class="barz-inner-2"></div>
                 </div>
             </div>
@@ -135,7 +132,7 @@
                 <button class="btn-repeat" id="btn-repeat" onclick="toggleRepeat()">⥀</button>
                 <button class="btn-shuffle" id="btn-shuffle" title="Coming Soon!" onclick="null">⤨</button>
                 <div class="volume-slider">
-                    <input type="range" min="0" max="100" value="100" class="slider" id="volume-range">
+                    <input title="Volume Slider" type="range" min="0" max="100" value="100" class="slider" id="volume-range">
                 </div>
             </div>
         </div>
